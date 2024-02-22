@@ -23,7 +23,7 @@ namespace Milimoe.OneBot.Api
 
                 HttpResponseMessage msg = await client.PostAsync(client.BaseAddress, jsonContent);
                 client.Dispose();
-                Console.WriteLine("Post -> " + "" + " " + msg.ReasonPhrase ?? "");
+                Console.WriteLine("Post -> " + json + " " + msg.ReasonPhrase ?? "");
             }
             catch (Exception e)
             {
