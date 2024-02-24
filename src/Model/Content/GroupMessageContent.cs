@@ -7,7 +7,9 @@ namespace Milimoe.OneBot.Model.Content
     {
         public long group_id { get; set; }
         public List<IMessage> message { get; } = [];
-        public bool auto_escape { get; set; } = false;
+
+        [JsonIgnore]
+        public string detail => string.Join(",", message.Select(m => m.data.ToString()));
 
         public GroupMessageContent(long group_id)
         {
@@ -15,11 +17,10 @@ namespace Milimoe.OneBot.Model.Content
         }
 
         [JsonConstructor]
-        public GroupMessageContent(long group_id, List<IMessage> message, bool auto_escape)
+        public GroupMessageContent(long group_id, List<IMessage> message)
         {
             this.group_id = group_id;
             this.message = message;
-            this.auto_escape = auto_escape;
         }
     }
 }

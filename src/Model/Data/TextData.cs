@@ -5,5 +5,7 @@ namespace Milimoe.OneBot.Model.Data
     public class TextData(string text) : IData
     {
         public string text { get; set; } = text;
+
+        public override string ToString() => text;
     }
 }

@@ -1,15 +1,17 @@
 ﻿using System.Net;
 using System.Text;
-using System.Web;
 using Milimoe.FunGame.Core.Api.Utility;
+using Milimoe.OneBot.Framework.Interface;
+using Milimoe.OneBot.Model.Event;
+using Milimoe.OneBot.Utility;
 
-namespace Milimoe.OneBot.Api
+namespace Milimoe.OneBot.Framework
 {
     public class HTTPListener
     {
         protected HttpListener? listener { get; set; } = default;
 
-        public HTTPListener(bool enable_ssl = false)
+        public HTTPListener()
         {
             listener = new()
             {
@@ -19,6 +21,7 @@ namespace Milimoe.OneBot.Api
             HTTPHelper.CheckExistsINI();
             string address = INIHelper.ReadINI("Listener", "address", "config.ini");
             string port = INIHelper.ReadINI("Listener", "port", "config.ini");
+            bool enable_ssl = Convert.ToBoolean(INIHelper.ReadINI("Listener", "ssl", "config.ini").ToLower());
 
             if (address.Trim() == "" || port.Trim() == "" || (int.TryParse(port, out int port_number) && port_number > 0 && port_number < 65535) == false)
             {
@@ -39,26 +42,38 @@ namespace Milimoe.OneBot.Api
             {
                 if (listener is null) return;
 
-                // 监听消息，没有请求则GetContext处于阻塞状态
                 HttpListenerContext ctx = listener.GetContext();
-
-                // 设置返回给客服端http状态代码
                 ctx.Response.StatusCode = 200;
 
-                // 接收数据
                 Stream stream = ctx.Request.InputStream;
                 StreamReader reader = new(stream, Encoding.UTF8);
                 string body = reader.ReadToEnd();
-                Console.WriteLine(DateTimeUtility.GetNowTime() + " 监听到POST\r\n" + HttpUtility.UrlDecode(body));
 
                 // 广播到具体监听事件中，处理POST数据
-                ListeningTask.OnGroupMessageHandle(body);
-                ListeningTask.OnFriendMessageHandle(body);
+                OnGroupMessageHandle(body);
+                OnFriendMessageHandle(body);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
             }
+        }
+
+        public delegate void GroupMessageListeningTask(GroupMessageEvent event_group);
+        public event GroupMessageListeningTask? GroupMessageListening;
+        public void OnGroupMessageHandle(string msg) => GroupMessageListening?.Invoke(CheckObject<GroupMessageEvent>((GroupMessageEvent)HTTPHelper.ParsingMsgToEvent<GroupMessageEvent>(msg)));
+
+        public delegate void FriendMessageListeningTask(FriendMessageEvent event_friend);
+        public event FriendMessageListeningTask? FriendMessageListening;
+        public void OnFriendMessageHandle(string msg) => FriendMessageListening?.Invoke(CheckObject<FriendMessageEvent>((FriendMessageEvent)HTTPHelper.ParsingMsgToEvent<FriendMessageEvent>(msg)));
+
+        private T CheckObject<T>(IEvent obj_event)
+        {
+            if (typeof(T) != obj_event.GetType())
+            {
+                throw new InvalidCastException(obj_event.GetType().FullName + "不是" + typeof(T).FullName + "。");
+            }
+            return (T)obj_event;
         }
     }
 }

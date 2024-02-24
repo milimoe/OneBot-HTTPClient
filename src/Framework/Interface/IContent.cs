@@ -3,5 +3,6 @@
     public interface IContent
     {
         public List<IMessage> message { get; }
+        public string detail { get; }
     }
 }

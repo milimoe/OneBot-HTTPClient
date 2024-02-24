@@ -2,7 +2,7 @@
 
 namespace Milimoe.OneBot.Model.Data
 {
-    public class FileData(string file) : IData
+    public class ImageData(string file) : IData
     {
         public string file { get; set; } = file;
         public string type { get; set; } = "";

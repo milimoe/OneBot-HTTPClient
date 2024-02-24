@@ -1,24 +1,26 @@
 ﻿using System.Text.Json.Serialization;
-using Milimoe.OneBot.Framework.Interface;
+using Milimoe.OneBot.Framework.Base;
 using Milimoe.OneBot.Model.Data;
 
 namespace Milimoe.OneBot.Model.Message
 {
-    public class ImageMessage : IMessage
+    public class ImageMessage : BaseMessage
     {
-        public string type { get; set; } = "image";
-        public IData data { get; set; }
+        public override string type { get; } = "image";
+        public new ImageData data { get; set; }
 
         public ImageMessage(string file)
         {
-            data = new FileData(file);
+            data = new ImageData(file);
+            base.data = data;
         }
 
         [JsonConstructor]
-        public ImageMessage(string type, FileData data)
+        public ImageMessage(string type, ImageData data)
         {
             this.type = type;
             this.data = data;
+            base.data = data;
         }
     }
 }

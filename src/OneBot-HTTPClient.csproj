@@ -13,12 +13,12 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>embedded</DebugType>
-    <NoWarn>1701;1702;IDE1006</NoWarn>
+    <NoWarn>1701;1702;IDE1006;CA1822</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>embedded</DebugType>
-    <NoWarn>1701;1702;IDE1006</NoWarn>
+    <NoWarn>1701;1702;IDE1006;CA1822</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <Folder Include="Framework\WebSocket\" />
-    <Folder Include="Framework\JsonConvert\" />
   </ItemGroup>
 
 </Project>

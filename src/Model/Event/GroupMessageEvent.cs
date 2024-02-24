@@ -1,8 +1,11 @@
 ﻿using System.Text.Json.Serialization;
+using Milimoe.OneBot.Framework;
 using Milimoe.OneBot.Framework.Base;
 using Milimoe.OneBot.Framework.Interface;
+using Milimoe.OneBot.Model.Content;
 using Milimoe.OneBot.Model.Message;
 using Milimoe.OneBot.Model.Other;
+using Milimoe.OneBot.Utility;
 
 namespace Milimoe.OneBot.Model.Event
 {
@@ -16,9 +19,9 @@ namespace Milimoe.OneBot.Model.Event
         public long message_id { get; set; } = 0;
         public long group_id { get; set; } = 0;
         public long user_id { get; set; } = 0;
-        public long real_id { get; set; } = 0;
+        public string real_id { get; set; } = "";
         public Anonymous anonymous { get; set; }
-        public IMessage message { get; set; }
+        public List<IMessage> message { get; set; }
         public string raw_message { get; set; } = "";
         public int font { get; set; } = 0;
         public Sender sender { get; set; }
@@ -27,11 +30,11 @@ namespace Milimoe.OneBot.Model.Event
         {
             anonymous = new();
             sender = new();
-            message = new AtMessage("");
+            message = [new TextMessage("")];
         }
 
         [JsonConstructor]
-        public GroupMessageEvent(string original_msg, long time, long self_id, string post_type, string message_type, string sub_type, int message_id, long group_id, long user_id, long real_id, Anonymous anonymous, IMessage message, string raw_message, int font, Sender sender) : base(original_msg)
+        public GroupMessageEvent(string original_msg, long time, long self_id, string post_type, string message_type, string sub_type, int message_id, long group_id, long user_id, string real_id, Anonymous anonymous, List<IMessage> message, string raw_message, int font, Sender sender) : base(original_msg)
         {
             this.time = time;
             this.self_id = self_id;
@@ -47,6 +50,32 @@ namespace Milimoe.OneBot.Model.Event
             this.raw_message = raw_message;
             this.font = font;
             this.sender = sender;
+        }
+
+        public async Task<string> SendMessage(string text, int delay = 0)
+        {
+            GroupMessageContent content = new(group_id);
+            content.message.Add(new TextMessage(text));
+            if (delay > 0)
+            {
+                await Task.Delay(delay);
+            }
+            return await HTTPPost.Post(SupportedAPI.send_group_msg, content);
+        }
+
+        public async Task<string> SendMessage(GroupMessageContent content, int delay = 0)
+        {
+            if (delay > 0)
+            {
+                await Task.Delay(delay);
+            }
+            return await HTTPPost.Post(SupportedAPI.send_group_msg, content);
+        }
+
+        public bool CheckThrow(long lesserthan, out long dice)
+        {
+            dice = new Random().NextInt64(100);
+            return dice < lesserthan;
         }
     }
 }

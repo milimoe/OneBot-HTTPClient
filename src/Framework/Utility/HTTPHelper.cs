@@ -2,10 +2,12 @@
 using Milimoe.FunGame.Core.Library.Constant;
 using Milimoe.OneBot.Framework;
 using Milimoe.OneBot.Framework.Interface;
+using Milimoe.OneBot.Framework.Utility;
 using Milimoe.OneBot.Model.Content;
 using Milimoe.OneBot.Model.Event;
+using Milimoe.OneBot.Model.Message;
 
-namespace Milimoe.OneBot.Api
+namespace Milimoe.OneBot.Utility
 {
     internal class HTTPHelper
     {
@@ -19,8 +21,10 @@ namespace Milimoe.OneBot.Api
                 writer.Close();
                 INIHelper.WriteINI("Listener", "address", "127.0.0.1", "config.ini");
                 INIHelper.WriteINI("Listener", "port", "33300", "config.ini");
+                INIHelper.WriteINI("Listener", "ssl", "false", "config.ini");
                 INIHelper.WriteINI("Post", "address", "127.0.0.1", "config.ini");
                 INIHelper.WriteINI("Post", "port", "33330", "config.ini");
+                INIHelper.WriteINI("Post", "ssl", "false", "config.ini");
             }
         }
 
@@ -29,17 +33,14 @@ namespace Milimoe.OneBot.Api
             IEvent result = new EmptyEvent(response_msg);
             try
             {
-                // TODO
                 if (typeof(T) == typeof(GroupMessageEvent))
                 {
-                    //result = NetworkUtility.JsonDeserialize<GroupMessageEvent>(response_msg) ?? new GroupMessageEvent(response_msg);
-                    result = new GroupMessageEvent(response_msg);
+                    result = JsonTools.GetObject<GroupMessageEvent>(response_msg) ?? new GroupMessageEvent(response_msg);
                 }
-                if (typeof(T) == typeof(FriendMessageEvent))
-                {
-                    //result = NetworkUtility.JsonDeserialize<FriendMessageEvent>(response_msg) ?? new FriendMessageEvent(response_msg);
-                    result = new FriendMessageEvent(response_msg);
-                }
+                //if (typeof(T) == typeof(FriendMessageEvent))
+                //{
+                //    result = JsonTools.GetObject<FriendMessageEvent>(response_msg) ?? new FriendMessageEvent(response_msg);
+                //}
             }
             catch (Exception e)
             {
@@ -52,10 +53,20 @@ namespace Milimoe.OneBot.Api
         {
             try
             {
+                // 检查content是否存在at，有at需要在后面添加一个空白的text
+                List<IMessage> newlist = [];
+                newlist.AddRange(content.message);
+                foreach (var item in content.message.Select((m, i) => new { message = m, index = i }).Where(item => item.message.type == "at"))
+                {
+                    newlist.Insert(item.index + 1, new TextMessage(" "));
+                }
+                content.message.Clear();
+                content.message.AddRange(newlist);
+
                 return post_type switch
                 {
-                    SupportedAPI.send_group_msg => NetworkUtility.JsonSerialize((GroupMessageContent)content),
-                    _ => NetworkUtility.JsonSerialize(content),
+                    SupportedAPI.send_group_msg => JsonTools.GetString((GroupMessageContent)content),
+                    _ => JsonTools.GetString(content),
                 };
             }
             catch (Exception e)

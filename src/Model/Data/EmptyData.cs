@@ -1,6 +1,8 @@
-﻿namespace Milimoe.OneBot.Model.Data
+﻿using Milimoe.OneBot.Framework.Interface;
+
+namespace Milimoe.OneBot.Model.Data
 {
-    public class EmptyData
+    public class EmptyData : IData
     {
         public override string ToString() => "";
     }
