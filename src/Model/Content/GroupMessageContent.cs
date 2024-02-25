@@ -9,7 +9,7 @@ namespace Milimoe.OneBot.Model.Content
         public List<IMessage> message { get; } = [];
 
         [JsonIgnore]
-        public string detail => string.Join(",", message.Select(m => m.data.ToString()));
+        public string detail => string.Join(" ", message.Select(m => m.data.ToString()?.Trim() ?? ""));
 
         public GroupMessageContent(long group_id)
         {

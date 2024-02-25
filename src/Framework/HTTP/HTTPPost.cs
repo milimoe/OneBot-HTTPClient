@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using Milimoe.FunGame.Core.Api.Utility;
 using Milimoe.OneBot.Framework.Interface;
-using Milimoe.OneBot.Model.Content;
 using Milimoe.OneBot.Utility;
 
 namespace Milimoe.OneBot.Framework
