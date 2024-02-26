@@ -1,7 +1,6 @@
 using System.Text.Json;
 using Milimoe.FunGame.Core.Library.Common.Architecture;
 using Milimoe.OneBot.Framework.Interface;
-using Milimoe.OneBot.Framework.Utility;
 using Milimoe.OneBot.Model.Event;
 using Milimoe.OneBot.Model.Message;
 using Milimoe.OneBot.Model.Other;
@@ -63,6 +62,9 @@ namespace Milimoe.OneBot.Framework.JsonConverter
                 case "raw_message":
                     result.raw_message = reader.GetString() ?? "";
                     break;
+                case "raw":
+                    result.raw = reader.GetString() ?? "";
+                    break;
                 case "font":
                     result.font = reader.GetInt32();
                     break;
@@ -82,19 +84,22 @@ namespace Milimoe.OneBot.Framework.JsonConverter
         {
             writer.WriteStartObject();
             writer.WriteNumber("time", value.time);
-            writer.WriteNumber("self_id", value.time);
+            writer.WriteNumber("self_id", value.self_id);
             writer.WriteString("post_type", value.post_type);
             writer.WriteString("sub_type", value.sub_type);
-            writer.WriteNumber("message_id", value.time);
-            writer.WriteNumber("group_id", value.time);
-            writer.WriteNumber("user_id", value.time);
-            writer.WriteNumber("real_id", value.time);
-            writer.WriteString("anonymous", JsonTools.GetString(value.anonymous));
+            writer.WriteNumber("message_id", value.message_id);
+            writer.WriteNumber("group_id", value.group_id);
+            writer.WriteNumber("user_id", value.user_id);
+            writer.WriteString("real_id", value.real_id);
+            writer.WritePropertyName("anonymous");
+            JsonSerializer.Serialize(writer, value.anonymous, options);
             writer.WritePropertyName("message");
             JsonSerializer.Serialize(writer, value.message, options);
             writer.WriteString("raw_message", value.raw_message);
-            writer.WriteNumber("font", value.time);
-            writer.WriteString("sender", JsonTools.GetString(value.sender));
+            writer.WriteString("raw", value.raw);
+            writer.WriteNumber("font", value.font);
+            writer.WritePropertyName("sender");
+            JsonSerializer.Serialize(writer, value.sender, options);
             writer.WriteEndObject();
         }
     }
