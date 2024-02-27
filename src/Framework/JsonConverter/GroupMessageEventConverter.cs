@@ -62,9 +62,6 @@ namespace Milimoe.OneBot.Framework.JsonConverter
                 case "raw_message":
                     result.raw_message = reader.GetString() ?? "";
                     break;
-                case "raw":
-                    result.raw = reader.GetString() ?? "";
-                    break;
                 case "font":
                     result.font = reader.GetInt32();
                     break;
@@ -96,7 +93,6 @@ namespace Milimoe.OneBot.Framework.JsonConverter
             writer.WritePropertyName("message");
             JsonSerializer.Serialize(writer, value.message, options);
             writer.WriteString("raw_message", value.raw_message);
-            writer.WriteString("raw", value.raw);
             writer.WriteNumber("font", value.font);
             writer.WritePropertyName("sender");
             JsonSerializer.Serialize(writer, value.sender, options);

@@ -54,14 +54,17 @@ namespace Milimoe.OneBot.Utility
             try
             {
                 // 检查content是否存在at，有at需要在后面添加一个空白的text
-                List<IMessage> newlist = [];
-                newlist.AddRange(content.message);
-                foreach (var item in content.message.Select((m, i) => new { message = m, index = i }).Where(item => item.message.type == "at"))
+                if (content is GroupMessageContent msg_content)
                 {
-                    newlist.Insert(item.index + 1, new TextMessage(" "));
+                    List<IMessage> newlist = [];
+                    newlist.AddRange(msg_content.message);
+                    foreach (var item in msg_content.message.Select((m, i) => new { message = m, index = i }).Where(item => item.message.type == "at"))
+                    {
+                        newlist.Insert(item.index + 1, new TextMessage(" "));
+                    }
+                    msg_content.message.Clear();
+                    msg_content.message.AddRange(newlist);
                 }
-                content.message.Clear();
-                content.message.AddRange(newlist);
 
                 return post_type switch
                 {

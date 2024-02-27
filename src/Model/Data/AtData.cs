@@ -7,6 +7,6 @@ namespace Milimoe.OneBot.Model.Data
         public string mention { get; set; } = mention;
         public string qq { get; set; } = qq;
 
-        public override string ToString() => qq;
+        public override string ToString() => $"@{qq}";
     }
 }

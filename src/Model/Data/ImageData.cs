@@ -11,6 +11,6 @@ namespace Milimoe.OneBot.Model.Data
         public int proxy { get; set; } = 1;
         public long timeout { get; set; } = 0;
 
-        public override string ToString() => file;
+        public override string ToString() => "[图片]";
     }
 }

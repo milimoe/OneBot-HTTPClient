@@ -8,6 +8,6 @@ namespace Milimoe.OneBot.Model.Data
         public string id { get; set; } = id;
         public string name { get; set; } = name;
 
-        public override string ToString() => type + ", " + id + ", " + name;
+        public override string ToString() => "[戳一戳]";
     }
 }
