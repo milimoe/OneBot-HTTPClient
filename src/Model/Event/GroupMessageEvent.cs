@@ -26,7 +26,7 @@ namespace Milimoe.OneBot.Model.Event
         public Sender sender { get; set; }
 
         [JsonIgnore]
-        public string detail => string.Join("", message.Select(m => m.data.ToString()?.Trim() ?? ""));
+        public string detail => string.Join(" ", message.Select(m => m.data.ToString()?.Trim() ?? ""));
 
         public GroupMessageEvent(string original_msg) : base(original_msg)
         {
