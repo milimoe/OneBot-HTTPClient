@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Milimoe.FunGame.Core.Api.Utility;
 using Milimoe.OneBot.Framework.Interface;
+using Milimoe.OneBot.Model.Content;
 using Milimoe.OneBot.Utility;
 
 namespace Milimoe.OneBot.Framework
@@ -20,7 +21,14 @@ namespace Milimoe.OneBot.Framework
 
                 client.BaseAddress = new Uri(enable_ssl ? "https://" : "http://" + address + ":" + port + "/" + post_type);
 
-                string json = HTTPHelper.GetJsonString(post_type, content);
+                string json = post_type switch
+                {
+                    SupportedAPI.set_group_admin => HTTPHelper.GetJsonString(post_type, (SetGroupAdminContent)content),
+                    SupportedAPI.set_group_ban => HTTPHelper.GetJsonString(post_type, (SetGroupBanContent)content),
+                    SupportedAPI.set_group_kick => HTTPHelper.GetJsonString(post_type, (SetGroupKickContent)content),
+                    SupportedAPI.set_group_name => HTTPHelper.GetJsonString(post_type, (SetGroupNameContent)content),
+                    _ => HTTPHelper.GetJsonString(post_type, content)
+                };
                 using StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
 
                 HttpResponseMessage msg = await client.PostAsync(client.BaseAddress, jsonContent);
