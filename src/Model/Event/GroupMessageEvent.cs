@@ -30,6 +30,7 @@ namespace Milimoe.OneBot.Model.Event
 
         public GroupMessageEvent(string original_msg) : base(original_msg)
         {
+            this.original_msg = original_msg;
             anonymous = new();
             sender = new();
             message = [new TextMessage("")];
@@ -38,6 +39,7 @@ namespace Milimoe.OneBot.Model.Event
         [JsonConstructor]
         public GroupMessageEvent(string original_msg, long time, long self_id, string post_type, string message_type, string sub_type, int message_id, long group_id, long user_id, string real_id, Anonymous anonymous, List<IMessage> message, string raw_message, int font, Sender sender) : base(original_msg)
         {
+            this.original_msg = original_msg;
             this.time = time;
             this.self_id = self_id;
             this.post_type = post_type;

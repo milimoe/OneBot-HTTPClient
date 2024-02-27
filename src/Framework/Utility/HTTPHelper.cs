@@ -68,6 +68,10 @@ namespace Milimoe.OneBot.Utility
 
                 return post_type switch
                 {
+                    SupportedAPI.set_group_admin => JsonTools.GetString((SetGroupAdminContent)content),
+                    SupportedAPI.set_group_ban => JsonTools.GetString((SetGroupBanContent)content),
+                    SupportedAPI.set_group_kick => JsonTools.GetString((SetGroupKickContent)content),
+                    SupportedAPI.set_group_name => JsonTools.GetString((SetGroupNameContent)content),
                     SupportedAPI.send_group_msg => JsonTools.GetString((GroupMessageContent)content),
                     _ => JsonTools.GetString(content),
                 };
