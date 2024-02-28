@@ -9,7 +9,7 @@ using Milimoe.OneBot.Model.Message;
 
 namespace Milimoe.OneBot.Utility
 {
-    internal class HTTPHelper
+    public class HTTPHelper
     {
         internal static void CheckExistsINI()
         {
@@ -30,17 +30,18 @@ namespace Milimoe.OneBot.Utility
 
         internal static IEvent ParsingMsgToEvent<T>(string response_msg)
         {
-            IEvent result = new EmptyEvent(response_msg);
+            IEvent result = new EmptyEvent();
             try
             {
                 if (typeof(T) == typeof(GroupMessageEvent))
                 {
-                    result = JsonTools.GetObject<GroupMessageEvent>(response_msg) ?? new GroupMessageEvent(response_msg);
+                    result = JsonTools.GetObject<GroupMessageEvent>(response_msg) ?? new GroupMessageEvent();
                 }
                 //if (typeof(T) == typeof(FriendMessageEvent))
                 //{
                 //    result = JsonTools.GetObject<FriendMessageEvent>(response_msg) ?? new FriendMessageEvent(response_msg);
                 //}
+                result.original_msg = response_msg;
             }
             catch (Exception e)
             {
@@ -49,7 +50,7 @@ namespace Milimoe.OneBot.Utility
             return result;
         }
 
-        internal static string GetJsonString(string post_type, IContent content)
+        public static string GetJsonString(string post_type, IContent content)
         {
             try
             {

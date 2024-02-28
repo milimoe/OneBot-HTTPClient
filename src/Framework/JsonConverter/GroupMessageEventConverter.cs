@@ -11,7 +11,7 @@ namespace Milimoe.OneBot.Framework.JsonConverter
     {
         public override void ReadPropertyName(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options, ref GroupMessageEvent? result)
         {
-            result ??= new("");
+            result ??= new();
             switch (propertyName)
             {
                 case "time":
