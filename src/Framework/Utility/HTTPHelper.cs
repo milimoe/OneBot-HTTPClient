@@ -25,6 +25,7 @@ namespace Milimoe.OneBot.Utility
                 INIHelper.WriteINI("Post", "address", "127.0.0.1", "config.ini");
                 INIHelper.WriteINI("Post", "port", "33330", "config.ini");
                 INIHelper.WriteINI("Post", "ssl", "false", "config.ini");
+                INIHelper.WriteINI("Post", "token", "", "config.ini");
             }
         }
 
