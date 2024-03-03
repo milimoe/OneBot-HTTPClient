@@ -74,6 +74,9 @@ namespace Milimoe.OneBot.Utility
                     SupportedAPI.set_group_kick => JsonTools.GetString((SetGroupKickContent)content),
                     SupportedAPI.set_group_name => JsonTools.GetString((SetGroupNameContent)content),
                     SupportedAPI.send_group_msg => JsonTools.GetString((GroupMessageContent)content),
+                    SupportedAPI.get_group_info => JsonTools.GetString((GetGroupInfoContent)content),
+                    SupportedAPI.get_group_member_info => JsonTools.GetString((GetGroupMemberInfoContent)content),
+                    SupportedAPI.get_group_member_list => JsonTools.GetString((GetGroupMemberList)content),
                     _ => JsonTools.GetString(content),
                 };
             }
