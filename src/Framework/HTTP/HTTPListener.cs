@@ -52,7 +52,6 @@ namespace Milimoe.OneBot.Framework
                 // 广播到具体监听事件中，处理POST数据
                 OnGroupMessageHandle(body);
                 OnFriendMessageHandle(body);
-                OnRequestDataHandle(body);
             }
             catch (Exception e)
             {
@@ -68,10 +67,6 @@ namespace Milimoe.OneBot.Framework
         public event FriendMessageListeningTask? FriendMessageListening;
         public void OnFriendMessageHandle(string msg) => FriendMessageListening?.Invoke(CheckObject<FriendMessageEvent>((FriendMessageEvent)HTTPHelper.ParsingMsgToEvent<FriendMessageEvent>(msg)));
         
-        public delegate void RequestDataListeningTask(string data);
-        public event RequestDataListeningTask? RequestDataListening;
-        public void OnRequestDataHandle(string data) => RequestDataListening?.Invoke(data);
-
         private T CheckObject<T>(IEvent obj_event)
         {
             if (typeof(T) != obj_event.GetType())

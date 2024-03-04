@@ -7,7 +7,7 @@ namespace Milimoe.OneBot.Framework
 {
     public class HTTPPost
     {
-        public static async Task<string> Post(string post_type, IContent content)
+        public static async Task<HttpResponseMessage> Post(string post_type, IContent content)
         {
             try
             {
@@ -27,12 +27,12 @@ namespace Milimoe.OneBot.Framework
 
                 HttpResponseMessage msg = await client.PostAsync(client.BaseAddress, jsonContent);
                 client.Dispose();
-                return msg.ReasonPhrase ?? "";
+                return msg;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return "";
+                return new();
             }
         }
     }

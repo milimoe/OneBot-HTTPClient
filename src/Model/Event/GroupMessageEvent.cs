@@ -54,7 +54,7 @@ namespace Milimoe.OneBot.Model.Event
             this.sender = sender;
         }
 
-        public async Task<string> SendMessage(string text, int delay = 0)
+        public async Task<HttpResponseMessage> SendMessage(string text, int delay = 0)
         {
             GroupMessageContent content = new(group_id);
             content.message.Add(new TextMessage(text));
@@ -65,7 +65,7 @@ namespace Milimoe.OneBot.Model.Event
             return await HTTPPost.Post(SupportedAPI.send_group_msg, content);
         }
 
-        public async Task<string> SendMessage(GroupMessageContent content, int delay = 0)
+        public async Task<HttpResponseMessage> SendMessage(GroupMessageContent content, int delay = 0)
         {
             if (delay > 0)
             {
