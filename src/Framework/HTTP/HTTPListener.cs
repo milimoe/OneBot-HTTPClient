@@ -38,25 +38,18 @@ namespace Milimoe.OneBot.Framework
 
         public void GetContext()
         {
-            try
-            {
-                if (listener is null) return;
+            if (listener is null) return;
 
-                HttpListenerContext ctx = listener.GetContext();
-                ctx.Response.StatusCode = 200;
+            HttpListenerContext ctx = listener.GetContext();
+            ctx.Response.StatusCode = 200;
 
-                Stream stream = ctx.Request.InputStream;
-                StreamReader reader = new(stream, Encoding.UTF8);
-                string body = reader.ReadToEnd();
+            Stream stream = ctx.Request.InputStream;
+            StreamReader reader = new(stream, Encoding.UTF8);
+            string body = reader.ReadToEnd();
 
-                // 广播到具体监听事件中，处理POST数据
-                OnGroupMessageHandle(body);
-                OnFriendMessageHandle(body);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+            // 广播到具体监听事件中，处理POST数据
+            OnGroupMessageHandle(body);
+            OnFriendMessageHandle(body);
         }
 
         public delegate void GroupMessageListeningTask(GroupMessageEvent event_group);

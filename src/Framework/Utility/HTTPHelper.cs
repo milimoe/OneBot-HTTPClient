@@ -44,48 +44,37 @@ namespace Milimoe.OneBot.Utility
                 //}
                 result.original_msg = response_msg;
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+            catch { }
             return result;
         }
 
         public static string GetJsonString(string post_type, IContent content)
         {
-            try
+            // 检查content是否存在at，有at需要在后面添加一个空白的text
+            if (content is GroupMessageContent msg_content)
             {
-                // 检查content是否存在at，有at需要在后面添加一个空白的text
-                if (content is GroupMessageContent msg_content)
+                List<IMessage> newlist = [];
+                newlist.AddRange(msg_content.message);
+                foreach (var item in msg_content.message.Select((m, i) => new { message = m, index = i }).Where(item => item.message.type == "at"))
                 {
-                    List<IMessage> newlist = [];
-                    newlist.AddRange(msg_content.message);
-                    foreach (var item in msg_content.message.Select((m, i) => new { message = m, index = i }).Where(item => item.message.type == "at"))
-                    {
-                        newlist.Insert(item.index + 1, new TextMessage(" "));
-                    }
-                    msg_content.message.Clear();
-                    msg_content.message.AddRange(newlist);
+                    newlist.Insert(item.index + 1, new TextMessage(" "));
                 }
+                msg_content.message.Clear();
+                msg_content.message.AddRange(newlist);
+            }
 
-                return post_type switch
-                {
-                    SupportedAPI.set_group_admin => JsonTools.GetString((SetGroupAdminContent)content),
-                    SupportedAPI.set_group_ban => JsonTools.GetString((SetGroupBanContent)content),
-                    SupportedAPI.set_group_kick => JsonTools.GetString((SetGroupKickContent)content),
-                    SupportedAPI.set_group_name => JsonTools.GetString((SetGroupNameContent)content),
-                    SupportedAPI.send_group_msg => JsonTools.GetString((GroupMessageContent)content),
-                    SupportedAPI.get_group_info => JsonTools.GetString((GetGroupInfoContent)content),
-                    SupportedAPI.get_group_member_info => JsonTools.GetString((GetGroupMemberInfoContent)content),
-                    SupportedAPI.get_group_member_list => JsonTools.GetString((GetGroupMemberList)content),
-                    _ => JsonTools.GetString(content),
-                };
-            }
-            catch (Exception e)
+            return post_type switch
             {
-                Console.WriteLine(e);
-            }
-            return "";
+                SupportedAPI.set_group_admin => JsonTools.GetString((SetGroupAdminContent)content),
+                SupportedAPI.set_group_ban => JsonTools.GetString((SetGroupBanContent)content),
+                SupportedAPI.set_group_kick => JsonTools.GetString((SetGroupKickContent)content),
+                SupportedAPI.set_group_name => JsonTools.GetString((SetGroupNameContent)content),
+                SupportedAPI.send_group_msg => JsonTools.GetString((GroupMessageContent)content),
+                SupportedAPI.get_group_info => JsonTools.GetString((GetGroupInfoContent)content),
+                SupportedAPI.get_group_member_info => JsonTools.GetString((GetGroupMemberInfoContent)content),
+                SupportedAPI.get_group_member_list => JsonTools.GetString((GetGroupMemberListContent)content),
+                _ => JsonTools.GetString(content),
+            };
         }
     }
 }
