@@ -1,4 +1,5 @@
-﻿using Milimoe.FunGame.Core.Api.Utility;
+﻿using System.Collections;
+using Milimoe.FunGame.Core.Api.Utility;
 using Milimoe.FunGame.Core.Library.Constant;
 using Milimoe.OneBot.Framework;
 using Milimoe.OneBot.Framework.Interface;
