@@ -30,7 +30,7 @@ namespace Milimoe.OneBot.Framework
             return msg;
         }
 
-        public static async Task Post(string post_type, IEnumerable<IContent> contents)
+        public static async Task<List<HttpResponseMessage>> Post(string post_type, IEnumerable<IContent> contents)
         {
             HttpClient client = new();
 
@@ -43,7 +43,8 @@ namespace Milimoe.OneBot.Framework
             client.BaseAddress = new Uri(enable_ssl ? "https://" : "http://" + address + ":" + port + "/" + post_type);
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
 
-            List<Task> tasks = [];
+            List<Task<HttpResponseMessage>> tasks = [];
+            List<HttpResponseMessage> responses = [];
 
             foreach (IContent content in contents)
             {
@@ -54,6 +55,13 @@ namespace Milimoe.OneBot.Framework
 
             await Task.WhenAll(tasks);
             client.Dispose();
+
+            foreach (Task<HttpResponseMessage> task in tasks)
+            {
+                responses.Add(task.Result);
+            }
+
+            return responses;
         }
     }
 }
