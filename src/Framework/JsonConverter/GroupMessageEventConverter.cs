@@ -39,7 +39,7 @@ namespace Milimoe.OneBot.Framework.JsonConverter
                     result.user_id = reader.GetInt64();
                     break;
                 case "real_id":
-                    result.real_id = reader.GetString() ?? "";
+                    result.real_id = reader.GetInt32();
                     break;
                 case "anonymous":
                     using (JsonDocument doc = JsonDocument.ParseValue(ref reader))
@@ -87,7 +87,7 @@ namespace Milimoe.OneBot.Framework.JsonConverter
             writer.WriteNumber("message_id", value.message_id);
             writer.WriteNumber("group_id", value.group_id);
             writer.WriteNumber("user_id", value.user_id);
-            writer.WriteString("real_id", value.real_id);
+            writer.WriteNumber("real_id", value.real_id);
             writer.WritePropertyName("anonymous");
             JsonSerializer.Serialize(writer, value.anonymous, options);
             writer.WritePropertyName("message");

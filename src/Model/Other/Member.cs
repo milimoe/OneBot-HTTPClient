@@ -11,7 +11,7 @@
         public string area { get; set; } = "";
         public int join_time { get; set; } = 0;
         public int last_sent_time { get; set; } = 0;
-        public string level { get; set; } = "";
+        public long level { get; set; } = 0;
         public string role { get; set; } = "";
         public bool unfriendly { get; set; } = false;
         public string title { get; set; } = "";
