@@ -11,7 +11,7 @@ namespace Milimoe.OneBot.Framework.Utility
             WriteIndented = true,
             ReferenceHandler = ReferenceHandler.IgnoreCycles,
             Converters = { new AnonymousConverter(), new GroupMessageEventConverter(), new SenderConverter(), new IMessageConverter(),
-                new GroupConverter(), new MemberConverter()}
+                new GroupConverter(), new MemberConverter(), new FriendMessageEventConverter(), new GroupBanEventConverter()}
         };
 
         public static string GetString<T>(T obj)

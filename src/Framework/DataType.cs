@@ -9,6 +9,7 @@ namespace Milimoe.OneBot.Framework
         public const string poke = "poke";
         public const string qq = "qq";
         public const string record = "record";
+        public const string reply = "reply";
         public const string text = "text";
         public const string video = "video";
     }

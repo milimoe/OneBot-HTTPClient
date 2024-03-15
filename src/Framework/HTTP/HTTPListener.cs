@@ -50,9 +50,36 @@ namespace Milimoe.OneBot.Framework
             string body = reader.ReadToEnd();
 
             // 广播到具体监听事件中，处理POST数据
-            OnGroupBanNoticeHandle(body);
-            OnGroupMessageHandle(body, out GroupMsgEventQuickReply? group_quick_reply);
-            OnFriendMessageHandle(body, out FriendMsgEventQuickReply? friend_quick_reply);
+            List<Task> tasks = [];
+            GroupMsgEventQuickReply? group_quick_reply = null;
+            FriendMsgEventQuickReply? friend_quick_reply = null;
+
+            tasks.Add(Task.Run(() =>
+            {
+                try
+                {
+                    OnGroupBanNoticeHandle(body);
+                }
+                catch { }
+            }));
+            tasks.Add(Task.Run(() =>
+            {
+                try
+                {
+                    OnGroupMessageHandle(body, out group_quick_reply);
+                }
+                catch { }
+            }));
+            tasks.Add(Task.Run(() =>
+            {
+                try
+                {
+                    OnFriendMessageHandle(body, out friend_quick_reply);
+                }
+                catch { }
+            }));
+
+            Task.WaitAll([.. tasks]);
 
             // 处理快速操作
             if (group_quick_reply != null || friend_quick_reply != null)
