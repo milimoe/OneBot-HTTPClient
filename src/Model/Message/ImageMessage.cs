@@ -9,9 +9,9 @@ namespace Milimoe.OneBot.Model.Message
         public override string type { get; } = "image";
         public new ImageData data { get; set; }
 
-        public ImageMessage(string file)
+        public ImageMessage(string file, string url = "")
         {
-            data = new ImageData(file);
+            data = new ImageData(file, url);
             base.data = data;
         }
 

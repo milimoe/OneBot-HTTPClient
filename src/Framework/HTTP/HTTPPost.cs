@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Text;
+﻿using System.Text;
 using Milimoe.FunGame.Core.Api.Utility;
 using Milimoe.OneBot.Framework.Interface;
-using Milimoe.OneBot.Framework.Utility;
 using Milimoe.OneBot.Utility;
 
 namespace Milimoe.OneBot.Framework
@@ -23,9 +21,9 @@ namespace Milimoe.OneBot.Framework
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
 
             string json = HTTPHelper.GetJsonString(post_type, content);
-            using StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
+            using StringContent json_content = new(json, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage msg = await client.PostAsync(client.BaseAddress, jsonContent);
+            HttpResponseMessage msg = await client.PostAsync(client.BaseAddress, json_content);
             client.Dispose();
             return msg;
         }
@@ -49,8 +47,8 @@ namespace Milimoe.OneBot.Framework
             foreach (IContent content in contents)
             {
                 string json = HTTPHelper.GetJsonString(post_type, content);
-                StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
-                tasks.Add(client.PostAsync(client.BaseAddress, jsonContent));
+                StringContent json_content = new(json, Encoding.UTF8, "application/json");
+                tasks.Add(client.PostAsync(client.BaseAddress, json_content));
             }
 
             await Task.WhenAll(tasks);

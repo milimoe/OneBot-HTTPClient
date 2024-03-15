@@ -61,17 +61,17 @@
         /// 发送好友赞
         /// </summary>
         public const string send_like = "send_like";
-        
+
         /// <summary>
         /// 群组全员禁言
         /// </summary>
         public const string set_group_whole_ban = "set_group_whole_ban";
-        
+
         /// <summary>
         /// 群组单人禁言
         /// </summary>
         public const string set_group_ban = "set_group_ban";
-        
+
         /// <summary>
         /// 群组踢人
         /// </summary>
@@ -91,7 +91,7 @@
         /// 设置群名
         /// </summary>
         public const string set_group_name = "set_group_name";
-        
+
         /// <summary>
         /// 获取版本信息
         /// </summary>
@@ -111,5 +111,35 @@
         /// 检查是否可以发送语音
         /// </summary>
         public const string can_send_record = "can_send_record";
+
+        /// <summary>
+        /// 获取指定图片
+        /// </summary>
+        public const string get_image = "get_image";
+
+        /// <summary>
+        /// 获取指定录音
+        /// </summary>
+        public const string get_record = "get_record";
+
+        /// <summary>
+        /// 主动获取被过滤的加群通知
+        /// </summary>
+        public const string get_group_ignore_add_request = "get_group_ignore_add_request";
+
+        /// <summary>
+        /// 配置文件获取
+        /// </summary>
+        public const string get_config = "get_config";
+
+        /// <summary>
+        /// 配置文件保存
+        /// </summary>
+        public const string set_config = "set_config";
+
+        /// <summary>
+        /// 群文件上传
+        /// </summary>
+        public const string upload_group_file = "upload_group_file";
     }
 }

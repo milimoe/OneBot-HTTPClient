@@ -1,14 +1,12 @@
 ﻿using System.Text.Json.Serialization;
-using Milimoe.OneBot.Framework;
 using Milimoe.OneBot.Framework.Base;
 using Milimoe.OneBot.Framework.Interface;
-using Milimoe.OneBot.Model.Content;
 using Milimoe.OneBot.Model.Message;
 using Milimoe.OneBot.Model.Other;
 
 namespace Milimoe.OneBot.Model.Event
 {
-    public class GroupMessageEvent : BaseEvent
+    public class GroupMessageEvent : BaseGroupEvent
     {
         public long time { get; set; } = 0;
         public long self_id { get; set; } = 0;
@@ -16,7 +14,6 @@ namespace Milimoe.OneBot.Model.Event
         public string message_type { get; set; } = "";
         public string sub_type { get; set; } = "";
         public long message_id { get; set; } = 0;
-        public long group_id { get; set; } = 0;
         public long user_id { get; set; } = 0;
         public string real_id { get; set; } = "";
         public Anonymous anonymous { get; set; }
@@ -28,7 +25,7 @@ namespace Milimoe.OneBot.Model.Event
         [JsonIgnore]
         public string detail => string.Join(" ", message.Select(m => m.data.ToString()?.Trim() ?? "")).Trim();
 
-        public GroupMessageEvent()
+        public GroupMessageEvent(long group_id = 0) : base(group_id)
         {
             anonymous = new();
             sender = new();
@@ -36,7 +33,7 @@ namespace Milimoe.OneBot.Model.Event
         }
 
         [JsonConstructor]
-        public GroupMessageEvent(long time, long self_id, string post_type, string message_type, string sub_type, int message_id, long group_id, long user_id, string real_id, Anonymous anonymous, List<IMessage> message, string raw_message, int font, Sender sender)
+        public GroupMessageEvent(long time, long self_id, string post_type, string message_type, string sub_type, int message_id, long group_id, long user_id, string real_id, Anonymous anonymous, List<IMessage> message, string raw_message, int font, Sender sender) : base(group_id)
         {
             this.time = time;
             this.self_id = self_id;
@@ -52,32 +49,6 @@ namespace Milimoe.OneBot.Model.Event
             this.raw_message = raw_message;
             this.font = font;
             this.sender = sender;
-        }
-
-        public async Task<HttpResponseMessage> SendMessage(string text, int delay = 0)
-        {
-            GroupMessageContent content = new(group_id);
-            content.message.Add(new TextMessage(text));
-            if (delay > 0)
-            {
-                await Task.Delay(delay);
-            }
-            return await HTTPPost.Post(SupportedAPI.send_group_msg, content);
-        }
-
-        public async Task<HttpResponseMessage> SendMessage(GroupMessageContent content, int delay = 0)
-        {
-            if (delay > 0)
-            {
-                await Task.Delay(delay);
-            }
-            return await HTTPPost.Post(SupportedAPI.send_group_msg, content);
-        }
-
-        public bool CheckThrow(long lesserthan, out long dice)
-        {
-            dice = new Random().NextInt64(100);
-            return dice < lesserthan;
         }
     }
 }

@@ -4,19 +4,19 @@ using Milimoe.OneBot.Model.Data;
 
 namespace Milimoe.OneBot.Model.Message
 {
-    public class RecordMessage : BaseMessage
+    public class ReplyMessage : BaseMessage
     {
-        public override string type { get; } = "record";
-        public new RecordData data { get; set; }
+        public override string type { get; } = "Reply";
+        public new ReplyData data { get; set; }
 
-        public RecordMessage(string file, string url = "")
+        public ReplyMessage(string id)
         {
-            data = new RecordData(file, url);
+            data = new ReplyData(id);
             base.data = data;
         }
 
         [JsonConstructor]
-        public RecordMessage(string type, RecordData data)
+        public ReplyMessage(string type, ReplyData data)
         {
             this.type = type;
             this.data = data;

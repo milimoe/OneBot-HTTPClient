@@ -14,7 +14,7 @@ namespace Milimoe.OneBot.Model.Message
             data = new AtData(mention, qq);
             base.data = data;
         }
-        
+
         public AtMessage(long qq)
         {
             string qqstr = qq.ToString();

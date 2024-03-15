@@ -2,7 +2,9 @@
 using System.Text;
 using Milimoe.FunGame.Core.Api.Utility;
 using Milimoe.OneBot.Framework.Interface;
+using Milimoe.OneBot.Framework.Utility;
 using Milimoe.OneBot.Model.Event;
+using Milimoe.OneBot.Model.QuickReply;
 using Milimoe.OneBot.Utility;
 
 namespace Milimoe.OneBot.Framework
@@ -48,18 +50,42 @@ namespace Milimoe.OneBot.Framework
             string body = reader.ReadToEnd();
 
             // 广播到具体监听事件中，处理POST数据
-            OnGroupMessageHandle(body);
-            OnFriendMessageHandle(body);
+            OnGroupBanNoticeHandle(body);
+            OnGroupMessageHandle(body, out GroupMsgEventQuickReply? group_quick_reply);
+            OnFriendMessageHandle(body, out FriendMsgEventQuickReply? friend_quick_reply);
+
+            // 处理快速操作
+            if (group_quick_reply != null || friend_quick_reply != null)
+            {
+                string json = group_quick_reply != null ? JsonTools.GetString(group_quick_reply) : (friend_quick_reply != null ? JsonTools.GetString(friend_quick_reply) : "");
+                byte[] buffer = Encoding.UTF8.GetBytes(json);
+                HttpListenerResponse response = ctx.Response;
+                response.ContentType = "application/json";
+                response.ContentLength64 = buffer.Length;
+                response.OutputStream.Write(buffer);
+            }
         }
 
-        public delegate void GroupMessageListeningTask(GroupMessageEvent event_group);
+        public delegate void GroupMessageListeningTask(GroupMessageEvent event_group, out GroupMsgEventQuickReply? quick_reply);
         public event GroupMessageListeningTask? GroupMessageListening;
-        public void OnGroupMessageHandle(string msg) => GroupMessageListening?.Invoke(CheckObject<GroupMessageEvent>((GroupMessageEvent)HTTPHelper.ParsingMsgToEvent<GroupMessageEvent>(msg)));
+        public void OnGroupMessageHandle(string msg, out GroupMsgEventQuickReply? quick_reply)
+        {
+            quick_reply = null;
+            GroupMessageListening?.Invoke(CheckObject<GroupMessageEvent>((GroupMessageEvent)HTTPHelper.ParsingMsgToEvent<GroupMessageEvent>(msg)), out quick_reply);
+        }
 
-        public delegate void FriendMessageListeningTask(FriendMessageEvent event_friend);
+        public delegate void GroupBanNoticeListeningTask(GroupBanEvent event_group);
+        public event GroupBanNoticeListeningTask? GroupBanNoticeListening;
+        public void OnGroupBanNoticeHandle(string msg) => GroupBanNoticeListening?.Invoke(CheckObject<GroupBanEvent>((GroupBanEvent)HTTPHelper.ParsingMsgToEvent<GroupBanEvent>(msg)));
+
+        public delegate void FriendMessageListeningTask(FriendMessageEvent event_friend, out FriendMsgEventQuickReply? quick_reply);
         public event FriendMessageListeningTask? FriendMessageListening;
-        public void OnFriendMessageHandle(string msg) => FriendMessageListening?.Invoke(CheckObject<FriendMessageEvent>((FriendMessageEvent)HTTPHelper.ParsingMsgToEvent<FriendMessageEvent>(msg)));
-        
+        public void OnFriendMessageHandle(string msg, out FriendMsgEventQuickReply? quick_reply)
+        {
+            quick_reply = null;
+            FriendMessageListening?.Invoke(CheckObject<FriendMessageEvent>((FriendMessageEvent)HTTPHelper.ParsingMsgToEvent<FriendMessageEvent>(msg)), out quick_reply);
+        }
+
         private T CheckObject<T>(IEvent obj_event)
         {
             if (typeof(T) != obj_event.GetType())

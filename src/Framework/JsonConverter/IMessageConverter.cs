@@ -22,6 +22,7 @@ namespace Milimoe.OneBot.Framework.JsonConverter
                             "at" => JsonSerializer.Deserialize<AtMessage>(root.GetRawText(), options) ?? new("", ""),
                             "image" => JsonSerializer.Deserialize<ImageMessage>(root.GetRawText(), options) ?? new(""),
                             "record" => JsonSerializer.Deserialize<RecordMessage>(root.GetRawText(), options) ?? new(""),
+                            "reply" => JsonSerializer.Deserialize<ReplyMessage>(root.GetRawText(), options) ?? new(""),
                             _ => JsonSerializer.Deserialize<TextMessage>(root.GetRawText(), options) ?? new(""),
                         };
                     }
@@ -54,6 +55,8 @@ namespace Milimoe.OneBot.Framework.JsonConverter
                 writer.WriteStartObject();
                 writer.WritePropertyName("file");
                 writer.WriteStringValue(image.data.file);
+                writer.WritePropertyName("url");
+                writer.WriteStringValue(image.data.url);
                 writer.WriteEndObject();
             }
             else if (value is RecordMessage record)
@@ -65,6 +68,19 @@ namespace Milimoe.OneBot.Framework.JsonConverter
                 writer.WriteStartObject();
                 writer.WritePropertyName("file");
                 writer.WriteStringValue(record.data.file);
+                writer.WritePropertyName("url");
+                writer.WriteStringValue(record.data.url);
+                writer.WriteEndObject();
+            }
+            else if (value is ReplyMessage reply)
+            {
+                writer.WritePropertyName("type");
+                writer.WriteStringValue("reply");
+
+                writer.WritePropertyName("data");
+                writer.WriteStartObject();
+                writer.WritePropertyName("id");
+                writer.WriteStringValue(reply.data.id);
                 writer.WriteEndObject();
             }
             else

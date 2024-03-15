@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Milimoe.FunGame.Core.Api.Utility;
+﻿using Milimoe.FunGame.Core.Api.Utility;
 using Milimoe.FunGame.Core.Library.Constant;
 using Milimoe.OneBot.Framework;
 using Milimoe.OneBot.Framework.Interface;
@@ -39,10 +38,14 @@ namespace Milimoe.OneBot.Utility
                 {
                     result = JsonTools.GetObject<GroupMessageEvent>(response_msg) ?? new GroupMessageEvent();
                 }
-                //if (typeof(T) == typeof(FriendMessageEvent))
-                //{
-                //    result = JsonTools.GetObject<FriendMessageEvent>(response_msg) ?? new FriendMessageEvent(response_msg);
-                //}
+                else if (typeof(T) == typeof(GroupBanEvent))
+                {
+                    result = JsonTools.GetObject<GroupBanEvent>(response_msg) ?? new GroupBanEvent();
+                }
+                else if (typeof(T) == typeof(FriendMessageEvent))
+                {
+                    result = JsonTools.GetObject<FriendMessageEvent>(response_msg) ?? new FriendMessageEvent();
+                }
                 result.original_msg = response_msg;
             }
             catch { }
@@ -66,10 +69,12 @@ namespace Milimoe.OneBot.Utility
 
             return post_type switch
             {
+                SupportedAPI.delete_msg => JsonTools.GetString((DeleteMsgContent)content),
                 SupportedAPI.set_group_admin => JsonTools.GetString((SetGroupAdminContent)content),
                 SupportedAPI.set_group_ban => JsonTools.GetString((SetGroupBanContent)content),
                 SupportedAPI.set_group_kick => JsonTools.GetString((SetGroupKickContent)content),
                 SupportedAPI.set_group_name => JsonTools.GetString((SetGroupNameContent)content),
+                SupportedAPI.send_private_msg => JsonTools.GetString((FriendMessageContent)content),
                 SupportedAPI.send_group_msg => JsonTools.GetString((GroupMessageContent)content),
                 SupportedAPI.get_group_info => JsonTools.GetString((GetGroupInfoContent)content),
                 SupportedAPI.get_group_member_info => JsonTools.GetString((GetGroupMemberInfoContent)content),
