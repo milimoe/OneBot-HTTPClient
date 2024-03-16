@@ -10,7 +10,6 @@ namespace Milimoe.OneBot.Model.Event
     {
         public long time { get; set; } = 0;
         public long self_id { get; set; } = 0;
-        public string post_type { get; set; } = "";
         public string message_type { get; set; } = "";
         public string sub_type { get; set; } = "";
         public long message_id { get; set; } = 0;
@@ -25,7 +24,7 @@ namespace Milimoe.OneBot.Model.Event
         [JsonIgnore]
         public string detail => string.Join(" ", message.Select(m => m.data.ToString()?.Trim() ?? "")).Trim();
 
-        public GroupMessageEvent(long group_id = 0) : base(group_id)
+        public GroupMessageEvent(long group_id = 0, string post_type = "message") : base(group_id, post_type)
         {
             anonymous = new();
             sender = new();
@@ -33,7 +32,7 @@ namespace Milimoe.OneBot.Model.Event
         }
 
         [JsonConstructor]
-        public GroupMessageEvent(long time, long self_id, string post_type, string message_type, string sub_type, int message_id, long group_id, long user_id, int real_id, Anonymous anonymous, List<IMessage> message, string raw_message, int font, Sender sender) : base(group_id)
+        public GroupMessageEvent(long time, long self_id, string post_type, string message_type, string sub_type, int message_id, long group_id, long user_id, int real_id, Anonymous anonymous, List<IMessage> message, string raw_message, int font, Sender sender) : base(group_id, post_type)
         {
             this.time = time;
             this.self_id = self_id;

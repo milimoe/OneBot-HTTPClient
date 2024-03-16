@@ -12,7 +12,6 @@ namespace Milimoe.OneBot.Model.Event
     {
         public long time { get; set; } = 0;
         public long self_id { get; set; } = 0;
-        public string post_type { get; set; } = "";
         public string message_type { get; set; } = "";
         public string sub_type { get; set; } = "";
         public long message_id { get; set; } = 0;
@@ -25,14 +24,14 @@ namespace Milimoe.OneBot.Model.Event
         [JsonIgnore]
         public string detail => string.Join(" ", message.Select(m => m.data.ToString()?.Trim() ?? "")).Trim();
 
-        public FriendMessageEvent()
+        public FriendMessageEvent(string post_type = "message") : base(post_type)
         {
             sender = new();
             message = [new TextMessage("")];
         }
 
         [JsonConstructor]
-        public FriendMessageEvent(long time, long self_id, string post_type, string message_type, string sub_type, int message_id, long user_id, List<IMessage> message, string raw_message, int font, Sender sender)
+        public FriendMessageEvent(long time, long self_id, string post_type, string message_type, string sub_type, int message_id, long user_id, List<IMessage> message, string raw_message, int font, Sender sender) : base(post_type)
         {
             this.time = time;
             this.self_id = self_id;

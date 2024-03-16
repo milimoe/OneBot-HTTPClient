@@ -25,6 +25,7 @@ namespace Milimoe.OneBot.Framework.JsonConverter
                     break;
                 case "message_type":
                     result.message_type = reader.GetString() ?? "";
+                    result.post_sub_type = result.message_type;
                     break;
                 case "sub_type":
                     result.sub_type = reader.GetString() ?? "";

@@ -3,7 +3,7 @@ using Milimoe.OneBot.Model.Message;
 
 namespace Milimoe.OneBot.Framework.Base
 {
-    public class BaseGroupEvent(long group_id) : BaseEvent
+    public class BaseGroupEvent(long group_id, string post_type) : BaseEvent(post_type)
     {
         public long group_id { get; set; } = group_id;
 

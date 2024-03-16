@@ -2,7 +2,7 @@
 
 namespace Milimoe.OneBot.Model.Event
 {
-    public class EmptyEvent() : BaseEvent()
+    public class EmptyEvent() : BaseEvent("")
     {
 
     }

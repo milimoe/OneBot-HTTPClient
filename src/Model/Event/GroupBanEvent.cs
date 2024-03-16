@@ -4,11 +4,10 @@ using Milimoe.OneBot.Framework.Base;
 namespace Milimoe.OneBot.Model.Event
 {
     [method: JsonConstructor]
-    public class GroupBanEvent(long time = 0, long self_id = 0, string post_type = "", string notice_type = "", string sub_type = "", long group_id = 0, long operator_id = 0, long user_id = 0, long duration = 0) : BaseGroupEvent(group_id)
+    public class GroupBanEvent(long time = 0, long self_id = 0, string post_type = "", string notice_type = "", string sub_type = "", long group_id = 0, long operator_id = 0, long user_id = 0, long duration = 0) : BaseGroupEvent(group_id, post_type)
     {
         public long time { get; set; } = time;
         public long self_id { get; set; } = self_id;
-        public string post_type { get; set; } = post_type;
         public string notice_type { get; set; } = notice_type;
         public string sub_type { get; set; } = sub_type;
         public long operator_id { get; set; } = operator_id;

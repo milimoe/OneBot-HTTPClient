@@ -107,28 +107,25 @@ namespace Milimoe.OneBot.Framework
         public void OnGroupMessageHandle(string msg, out GroupMsgEventQuickReply? quick_reply)
         {
             quick_reply = null;
-            GroupMessageListening?.Invoke(CheckObject<GroupMessageEvent>((GroupMessageEvent)HTTPHelper.ParseMsgToEvent<GroupMessageEvent>(msg)), out quick_reply);
+            IEvent e = HTTPHelper.ParseMsgToEvent<GroupMessageEvent>(msg);
+            if (e.post_type == "message" && e.post_sub_type == "group") GroupMessageListening?.Invoke((GroupMessageEvent)e, out quick_reply);
         }
 
-        public delegate void GroupBanNoticeListeningTask(GroupBanEvent event_group);
+        public delegate void GroupBanNoticeListeningTask(GroupBanEvent event_groupban);
         public event GroupBanNoticeListeningTask? GroupBanNoticeListening;
-        public void OnGroupBanNoticeHandle(string msg) => GroupBanNoticeListening?.Invoke(CheckObject<GroupBanEvent>((GroupBanEvent)HTTPHelper.ParseMsgToEvent<GroupBanEvent>(msg)));
+        public void OnGroupBanNoticeHandle(string msg)
+        {
+            IEvent e = HTTPHelper.ParseMsgToEvent<GroupBanEvent>(msg);
+            if (e.post_type == "notice" && e.post_sub_type == "group_ban") GroupBanNoticeListening?.Invoke((GroupBanEvent)e);
+        }
 
         public delegate void FriendMessageListeningTask(FriendMessageEvent event_friend, out FriendMsgEventQuickReply? quick_reply);
         public event FriendMessageListeningTask? FriendMessageListening;
         public void OnFriendMessageHandle(string msg, out FriendMsgEventQuickReply? quick_reply)
         {
             quick_reply = null;
-            FriendMessageListening?.Invoke(CheckObject<FriendMessageEvent>((FriendMessageEvent)HTTPHelper.ParseMsgToEvent<FriendMessageEvent>(msg)), out quick_reply);
-        }
-
-        private T CheckObject<T>(IEvent obj_event)
-        {
-            if (typeof(T) != obj_event.GetType())
-            {
-                throw new InvalidCastException(obj_event.GetType().FullName + "不是" + typeof(T).FullName + "。");
-            }
-            return (T)obj_event;
+            IEvent e = HTTPHelper.ParseMsgToEvent<FriendMessageEvent>(msg);
+            if (e.post_type == "message" && e.post_sub_type == "private") FriendMessageListening?.Invoke((FriendMessageEvent)e, out quick_reply);
         }
     }
 }
