@@ -60,7 +60,10 @@ namespace Milimoe.OneBot.Framework
                 {
                     OnGroupBanNoticeHandle(body);
                 }
-                catch { }
+                catch (Exception e)
+                {
+                    TXTHelper.AppendErrorLog(e.ToString() + "\r\nSource Message:\r\n" + body);
+                }
             }));
             tasks.Add(Task.Run(() =>
             {
@@ -68,7 +71,10 @@ namespace Milimoe.OneBot.Framework
                 {
                     OnGroupMessageHandle(body, out group_quick_reply);
                 }
-                catch { }
+                catch (Exception e)
+                {
+                    TXTHelper.AppendErrorLog(e.ToString() + "\r\nSource Message:\r\n" + body);
+                }
             }));
             tasks.Add(Task.Run(() =>
             {
@@ -76,7 +82,10 @@ namespace Milimoe.OneBot.Framework
                 {
                     OnFriendMessageHandle(body, out friend_quick_reply);
                 }
-                catch { }
+                catch (Exception e)
+                {
+                    TXTHelper.AppendErrorLog(e.ToString() + "\r\nSource Message:\r\n" + body);
+                }
             }));
 
             Task.WaitAll([.. tasks]);
@@ -98,19 +107,19 @@ namespace Milimoe.OneBot.Framework
         public void OnGroupMessageHandle(string msg, out GroupMsgEventQuickReply? quick_reply)
         {
             quick_reply = null;
-            GroupMessageListening?.Invoke(CheckObject<GroupMessageEvent>((GroupMessageEvent)HTTPHelper.ParsingMsgToEvent<GroupMessageEvent>(msg)), out quick_reply);
+            GroupMessageListening?.Invoke(CheckObject<GroupMessageEvent>((GroupMessageEvent)HTTPHelper.ParseMsgToEvent<GroupMessageEvent>(msg)), out quick_reply);
         }
 
         public delegate void GroupBanNoticeListeningTask(GroupBanEvent event_group);
         public event GroupBanNoticeListeningTask? GroupBanNoticeListening;
-        public void OnGroupBanNoticeHandle(string msg) => GroupBanNoticeListening?.Invoke(CheckObject<GroupBanEvent>((GroupBanEvent)HTTPHelper.ParsingMsgToEvent<GroupBanEvent>(msg)));
+        public void OnGroupBanNoticeHandle(string msg) => GroupBanNoticeListening?.Invoke(CheckObject<GroupBanEvent>((GroupBanEvent)HTTPHelper.ParseMsgToEvent<GroupBanEvent>(msg)));
 
         public delegate void FriendMessageListeningTask(FriendMessageEvent event_friend, out FriendMsgEventQuickReply? quick_reply);
         public event FriendMessageListeningTask? FriendMessageListening;
         public void OnFriendMessageHandle(string msg, out FriendMsgEventQuickReply? quick_reply)
         {
             quick_reply = null;
-            FriendMessageListening?.Invoke(CheckObject<FriendMessageEvent>((FriendMessageEvent)HTTPHelper.ParsingMsgToEvent<FriendMessageEvent>(msg)), out quick_reply);
+            FriendMessageListening?.Invoke(CheckObject<FriendMessageEvent>((FriendMessageEvent)HTTPHelper.ParseMsgToEvent<FriendMessageEvent>(msg)), out quick_reply);
         }
 
         private T CheckObject<T>(IEvent obj_event)

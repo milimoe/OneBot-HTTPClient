@@ -29,7 +29,7 @@ namespace Milimoe.OneBot.Utility
             }
         }
 
-        internal static IEvent ParsingMsgToEvent<T>(string response_msg)
+        internal static IEvent ParseMsgToEvent<T>(string response_msg)
         {
             IEvent result = new EmptyEvent();
             try
@@ -37,14 +37,17 @@ namespace Milimoe.OneBot.Utility
                 if (typeof(T) == typeof(GroupMessageEvent))
                 {
                     result = JsonTools.GetObject<GroupMessageEvent>(response_msg) ?? new GroupMessageEvent();
+                    if (((GroupMessageEvent)result).message_type != "group") result = new GroupMessageEvent();
                 }
                 else if (typeof(T) == typeof(GroupBanEvent))
                 {
                     result = JsonTools.GetObject<GroupBanEvent>(response_msg) ?? new GroupBanEvent();
+                    if (((GroupBanEvent)result).notice_type != "group_ban") result = new GroupBanEvent();
                 }
                 else if (typeof(T) == typeof(FriendMessageEvent))
                 {
                     result = JsonTools.GetObject<FriendMessageEvent>(response_msg) ?? new FriendMessageEvent();
+                    if (((FriendMessageEvent)result).message_type != "private") result = new FriendMessageEvent();
                 }
                 result.original_msg = response_msg;
             }
