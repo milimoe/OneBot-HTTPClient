@@ -1,47 +1,23 @@
-﻿using Milimoe.FunGame.Core.Api.Utility;
+﻿using Config = Milimoe.FunGame.Core.Api.Utility.PluginConfig;
 
 namespace Milimoe.OneBot.Framework.Utility
 {
-    public class PluginConfig<TKey, TValue>(string plugin_name, string file_name) : Dictionary<TKey, TValue> where TKey : notnull
+    public class PluginConfig(string plugin_name, string file_name)
     {
-        public string plugin_name { get; set; } = plugin_name;
-        public string file_name { get; set; } = file_name;
+        public Config config { get; set; } = new(plugin_name, file_name);
 
-        private readonly Dictionary<TKey, TValue> _config = [];
-
-        public new TValue? this[TKey key]
+        public object this[string key]
         {
-            get
-            {
-                if (_config.TryGetValue(key, out TValue? value)) return value;
-                return default;
-            }
-            set => AddConfig(key, value);
+            get => config[key];
+            set => config[key] = value;
         }
 
-        public void AddConfig(TKey key, TValue? value)
-        {
-            if (value != null)
-            {
-                _config.Remove(key);
-                _config.Add(key, value);
-            }
-        }
+        public void Add(string key, object value) => config.Add(key, value);
 
-        public void LoadConfig()
-        {
-            TXTHelper.ReadTXT(file_name, plugin_name);
-        }
+        public bool TryGetValue(string key, out object? value) => config.TryGetValue(key, out value);
 
-        public void SaveConfig()
-        {
-            string json = JsonTools.GetString(_config);
-            string path = $@"{AppDomain.CurrentDomain.BaseDirectory}{plugin_name}";
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-            TXTHelper.WriteTXT(json, file_name, plugin_name);
-        }
+        public void Save() => config.SaveConfig();
+
+        public void Load() => config.LoadConfig();
     }
 }

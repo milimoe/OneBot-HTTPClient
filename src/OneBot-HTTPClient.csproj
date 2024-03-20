@@ -22,13 +22,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="FunGame.Core">
-      <HintPath>..\dll\FunGame.Core.dll</HintPath>
-    </Reference>
+    <Folder Include="Framework\WebSocket\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Framework\WebSocket\" />
+    <Reference Include="FunGame.Core">
+      <HintPath>..\dll\FunGame.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
