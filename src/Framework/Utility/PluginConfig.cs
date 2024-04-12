@@ -6,6 +6,10 @@ namespace Milimoe.OneBot.Framework.Utility
     {
         public Config config { get; set; } = new(plugin_name, file_name);
 
+        public Dictionary<string, object>.KeyCollection Keys => config.Keys;
+
+        public Dictionary<string, object>.ValueCollection Values => config.Values;
+
         public object this[string key]
         {
             get => config[key];
