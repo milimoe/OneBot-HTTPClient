@@ -20,6 +20,8 @@ namespace Milimoe.OneBot.Framework.Utility
 
         public bool TryGetValue(string key, out object? value) => config.TryGetValue(key, out value);
 
+        public void Clear() => config.Clear();
+
         public void Save() => config.SaveConfig();
 
         public void Load() => config.LoadConfig();
