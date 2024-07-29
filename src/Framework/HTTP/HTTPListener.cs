@@ -38,7 +38,7 @@ namespace Milimoe.OneBot.Framework
 
         public string address => listener?.Prefixes.FirstOrDefault() ?? "";
 
-        public void GetContext()
+        public async Task GetContext()
         {
             if (listener is null) return;
 
@@ -49,83 +49,65 @@ namespace Milimoe.OneBot.Framework
             StreamReader reader = new(stream, Encoding.UTF8);
             string body = reader.ReadToEnd();
 
-            // 广播到具体监听事件中，处理POST数据
-            List<Task> tasks = [];
             GroupMsgEventQuickReply? group_quick_reply = null;
             FriendMsgEventQuickReply? friend_quick_reply = null;
 
-            tasks.Add(Task.Run(() =>
+            // 广播到具体监听事件中，处理POST数据
+            try
             {
-                try
-                {
-                    OnGroupBanNoticeHandle(body);
-                }
-                catch (Exception e)
-                {
-                    TXTHelper.AppendErrorLog(e.ToString() + "\r\nSource Message:\r\n" + body);
-                }
-            }));
-            tasks.Add(Task.Run(() =>
-            {
-                try
-                {
-                    OnGroupMessageHandle(body, out group_quick_reply);
-                }
-                catch (Exception e)
-                {
-                    TXTHelper.AppendErrorLog(e.ToString() + "\r\nSource Message:\r\n" + body);
-                }
-            }));
-            tasks.Add(Task.Run(() =>
-            {
-                try
-                {
-                    OnFriendMessageHandle(body, out friend_quick_reply);
-                }
-                catch (Exception e)
-                {
-                    TXTHelper.AppendErrorLog(e.ToString() + "\r\nSource Message:\r\n" + body);
-                }
-            }));
+                Task<GroupMsgEventQuickReply?> task_groupmsg = OnGroupMessageHandle(body);
+                Task task_groupban = OnGroupBanNoticeHandle(body);
+                Task<FriendMsgEventQuickReply?> task_friendmsg = OnFriendMessageHandle(body);
 
-            Task.WaitAll([.. tasks]);
+                await Task.WhenAll(task_groupmsg, task_groupban, task_friendmsg);
+
+                group_quick_reply = await task_groupmsg;
+                friend_quick_reply = await task_friendmsg;
+            }
+            catch (Exception e)
+            {
+                TXTHelper.AppendErrorLog(e.ToString());
+            }
 
             // 处理快速操作
+            string json = "{}";
             if (group_quick_reply != null || friend_quick_reply != null)
             {
-                string json = group_quick_reply != null ? JsonTools.GetString(group_quick_reply) : (friend_quick_reply != null ? JsonTools.GetString(friend_quick_reply) : "");
-                byte[] buffer = Encoding.UTF8.GetBytes(json);
-                HttpListenerResponse response = ctx.Response;
-                response.ContentType = "application/json";
-                response.ContentLength64 = buffer.Length;
-                response.OutputStream.Write(buffer);
+                json = group_quick_reply != null ? JsonTools.GetString(group_quick_reply) : (friend_quick_reply != null ? JsonTools.GetString(friend_quick_reply) : "");
             }
+
+            // 回复HTTP请求
+            byte[] buffer = Encoding.UTF8.GetBytes(json);
+            HttpListenerResponse response = ctx.Response;
+            response.ContentType = "application/json";
+            response.ContentLength64 = buffer.Length;
+            response.OutputStream.Write(buffer);
         }
 
-        public delegate void GroupMessageListeningTask(GroupMessageEvent event_group, out GroupMsgEventQuickReply? quick_reply);
+        public delegate Task<GroupMsgEventQuickReply?> GroupMessageListeningTask(GroupMessageEvent event_group);
         public event GroupMessageListeningTask? GroupMessageListening;
-        public void OnGroupMessageHandle(string msg, out GroupMsgEventQuickReply? quick_reply)
+        public async Task<GroupMsgEventQuickReply?> OnGroupMessageHandle(string msg)
         {
-            quick_reply = null;
             IEvent e = HTTPHelper.ParseMsgToEvent<GroupMessageEvent>(msg);
-            if (e.post_type == "message" && e.post_sub_type == "group") GroupMessageListening?.Invoke((GroupMessageEvent)e, out quick_reply);
+            if (e.post_type == "message" && e.post_sub_type == "group" && GroupMessageListening != null) return await GroupMessageListening.Invoke((GroupMessageEvent)e);
+            return null;
         }
 
-        public delegate void GroupBanNoticeListeningTask(GroupBanEvent event_groupban);
+        public delegate Task GroupBanNoticeListeningTask(GroupBanEvent event_groupban);
         public event GroupBanNoticeListeningTask? GroupBanNoticeListening;
-        public void OnGroupBanNoticeHandle(string msg)
+        public async Task OnGroupBanNoticeHandle(string msg)
         {
             IEvent e = HTTPHelper.ParseMsgToEvent<GroupBanEvent>(msg);
-            if (e.post_type == "notice" && e.post_sub_type == "group_ban") GroupBanNoticeListening?.Invoke((GroupBanEvent)e);
+            if (e.post_type == "notice" && e.post_sub_type == "group_ban" && GroupBanNoticeListening != null) await GroupBanNoticeListening.Invoke((GroupBanEvent)e);
         }
 
-        public delegate void FriendMessageListeningTask(FriendMessageEvent event_friend, out FriendMsgEventQuickReply? quick_reply);
+        public delegate Task<FriendMsgEventQuickReply?> FriendMessageListeningTask(FriendMessageEvent event_friend);
         public event FriendMessageListeningTask? FriendMessageListening;
-        public void OnFriendMessageHandle(string msg, out FriendMsgEventQuickReply? quick_reply)
+        public async Task<FriendMsgEventQuickReply?> OnFriendMessageHandle(string msg)
         {
-            quick_reply = null;
             IEvent e = HTTPHelper.ParseMsgToEvent<FriendMessageEvent>(msg);
-            if (e.post_type == "message" && e.post_sub_type == "private") FriendMessageListening?.Invoke((FriendMessageEvent)e, out quick_reply);
+            if (e.post_type == "message" && e.post_sub_type == "private" && FriendMessageListening != null) return await FriendMessageListening.Invoke((FriendMessageEvent)e);
+            return null;
         }
     }
 }
