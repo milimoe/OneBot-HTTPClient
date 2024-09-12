@@ -6,9 +6,13 @@ namespace Milimoe.OneBot.Framework.JsonConverter
 {
     public class GroupBanEventConverter : BaseEntityConverter<GroupBanEvent>
     {
-        public override void ReadPropertyName(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options, ref GroupBanEvent? result)
+        public override GroupBanEvent NewInstance()
         {
-            result ??= new();
+            return new();
+        }
+
+        public override void ReadPropertyName(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options, ref GroupBanEvent result)
+        {
             switch (propertyName)
             {
                 case "time":

@@ -6,9 +6,13 @@ namespace Milimoe.OneBot.Framework.JsonConverter
 {
     public class SenderConverter : BaseEntityConverter<Sender>
     {
-        public override void ReadPropertyName(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options, ref Sender? result)
+        public override Sender NewInstance()
         {
-            result ??= new();
+            return new();
+        }
+
+        public override void ReadPropertyName(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options, ref Sender result)
+        {
             switch (propertyName)
             {
                 case "user_id":

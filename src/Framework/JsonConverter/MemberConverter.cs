@@ -6,9 +6,13 @@ namespace Milimoe.OneBot.Framework.JsonConverter
 {
     public class MemberConverter : BaseEntityConverter<Member>
     {
-        public override void ReadPropertyName(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options, ref Member? result)
+        public override Member NewInstance()
         {
-            result ??= new();
+            return new();
+        }
+
+        public override void ReadPropertyName(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options, ref Member result)
+        {
             switch (propertyName)
             {
                 case "group_id":

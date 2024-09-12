@@ -6,9 +6,13 @@ namespace Milimoe.OneBot.Framework.JsonConverter
 {
     public class AnonymousConverter : BaseEntityConverter<Anonymous>
     {
-        public override void ReadPropertyName(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options, ref Anonymous? result)
+        public override Anonymous NewInstance()
         {
-            result ??= new();
+            return new();
+        }
+
+        public override void ReadPropertyName(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options, ref Anonymous result)
+        {
             switch (propertyName)
             {
                 case "id":

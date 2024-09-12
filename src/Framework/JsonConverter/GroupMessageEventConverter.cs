@@ -9,9 +9,13 @@ namespace Milimoe.OneBot.Framework.JsonConverter
 {
     public class GroupMessageEventConverter : BaseEntityConverter<GroupMessageEvent>
     {
-        public override void ReadPropertyName(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options, ref GroupMessageEvent? result)
+        public override GroupMessageEvent NewInstance()
         {
-            result ??= new();
+            return new();
+        }
+
+        public override void ReadPropertyName(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options, ref GroupMessageEvent result)
+        {
             switch (propertyName)
             {
                 case "time":

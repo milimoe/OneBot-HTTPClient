@@ -9,9 +9,13 @@ namespace Milimoe.OneBot.Framework.JsonConverter
 {
     public class FriendMessageEventConverter : BaseEntityConverter<FriendMessageEvent>
     {
-        public override void ReadPropertyName(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options, ref FriendMessageEvent? result)
+        public override FriendMessageEvent NewInstance()
         {
-            result ??= new();
+            return new();
+        }
+
+        public override void ReadPropertyName(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options, ref FriendMessageEvent result)
+        {
             switch (propertyName)
             {
                 case "time":
