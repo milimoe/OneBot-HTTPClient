@@ -70,6 +70,8 @@ namespace Milimoe.OneBot.Utility
             return post_type switch
             {
                 SupportedAPI.delete_msg => JsonTools.GetString((DeleteMsgContent)content),
+                SupportedAPI.set_essence_msg => JsonTools.GetString((EssenceMsgContent)content),
+                SupportedAPI.delete_essence_msg => JsonTools.GetString((DeleteEssenceMsgContent)content),
                 SupportedAPI.set_group_admin => JsonTools.GetString((SetGroupAdminContent)content),
                 SupportedAPI.set_group_ban => JsonTools.GetString((SetGroupBanContent)content),
                 SupportedAPI.set_group_kick => JsonTools.GetString((SetGroupKickContent)content),

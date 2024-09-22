@@ -36,7 +36,7 @@ namespace Milimoe.OneBot.Framework
                 BaseAddress = new Uri(Enable_SSL ? "https://" : "http://" + Address + ":" + Port + "/" + post_type)
             };
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
-            client.DefaultRequestHeaders.Referrer = new Uri(referrer);
+            if (referrer.Trim() != "") client.DefaultRequestHeaders.Referrer = new Uri(referrer);
 
             string json = HTTPHelper.GetJsonString(post_type, content);
             using StringContent json_content = new(json, Encoding.UTF8, "application/json");
@@ -59,7 +59,7 @@ namespace Milimoe.OneBot.Framework
                 BaseAddress = new Uri(Enable_SSL ? "https://" : "http://" + Address + ":" + Port + "/" + post_type)
             };
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
-            client.DefaultRequestHeaders.Referrer = new Uri(referrer);
+            if (referrer.Trim() != "") client.DefaultRequestHeaders.Referrer = new Uri(referrer);
 
             List<Task<HttpResponseMessage>> tasks = [];
             List<HttpResponseMessage> responses = [];

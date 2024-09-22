@@ -141,5 +141,15 @@
         /// 群文件上传
         /// </summary>
         public const string upload_group_file = "upload_group_file";
+
+        /// <summary>
+        /// 设置精华消息
+        /// </summary>
+        public const string set_essence_msg = "set_essence_msg";
+
+        /// <summary>
+        /// 取消精华消息
+        /// </summary>
+        public const string delete_essence_msg = "delete_essence_msg";
     }
 }
