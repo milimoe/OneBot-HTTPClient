@@ -43,7 +43,7 @@ namespace Milimoe.OneBot.Framework.JsonConverter
                     result.last_sent_time = reader.GetInt32();
                     break;
                 case "level":
-                    result.level = reader.GetInt64();
+                    result.level = reader.GetString() ?? "";
                     break;
                 case "role":
                     result.role = reader.GetString() ?? "";
@@ -75,7 +75,7 @@ namespace Milimoe.OneBot.Framework.JsonConverter
             writer.WriteString("area", value.area);
             writer.WriteNumber("join_time", value.join_time);
             writer.WriteNumber("last_sent_time", value.last_sent_time);
-            writer.WriteNumber("level", value.level);
+            writer.WriteString("level", value.level);
             writer.WriteString("role", value.role);
             writer.WriteBoolean("unfriendly", value.unfriendly);
             writer.WriteString("title", value.title);
