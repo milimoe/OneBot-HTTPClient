@@ -7,18 +7,36 @@ namespace Milimoe.OneBot.Framework
 {
     public class HTTPPost
     {
-        public static async Task<HttpResponseMessage> Post(string post_type, IContent content)
+        public static string Address { get; set; } = "";
+        public static string Port { get; set; } = "";
+        public static bool Enable_SSL { get; set; } = false;
+        public static string Token { get; set; } = "";
+
+        private static bool _first = true;
+
+        public static void GetSettings()
         {
-            HttpClient client = new();
-
             HTTPHelper.CheckExistsINI();
-            string address = INIHelper.ReadINI("Post", "address", "config.ini");
-            string port = INIHelper.ReadINI("Post", "port", "config.ini");
-            bool enable_ssl = Convert.ToBoolean(INIHelper.ReadINI("Post", "ssl", "config.ini").ToLower());
-            string token = INIHelper.ReadINI("Post", "token", "config.ini").ToLower();
+            Address = INIHelper.ReadINI("Post", "address", "config.ini");
+            Port = INIHelper.ReadINI("Post", "port", "config.ini");
+            Enable_SSL = Convert.ToBoolean(INIHelper.ReadINI("Post", "ssl", "config.ini").ToLower());
+            Token = INIHelper.ReadINI("Post", "token", "config.ini").ToLower();
+        }
 
-            client.BaseAddress = new Uri(enable_ssl ? "https://" : "http://" + address + ":" + port + "/" + post_type);
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+        public static async Task<HttpResponseMessage> Post(string post_type, IContent content, string referrer = "", bool reget_settings = false)
+        {
+            if (_first || reget_settings)
+            {
+                _first = false;
+                GetSettings();
+            }
+
+            HttpClient client = new()
+            {
+                BaseAddress = new Uri(Enable_SSL ? "https://" : "http://" + Address + ":" + Port + "/" + post_type)
+            };
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
+            client.DefaultRequestHeaders.Referrer = new Uri(referrer);
 
             string json = HTTPHelper.GetJsonString(post_type, content);
             using StringContent json_content = new(json, Encoding.UTF8, "application/json");
@@ -28,18 +46,20 @@ namespace Milimoe.OneBot.Framework
             return msg;
         }
 
-        public static async Task<List<HttpResponseMessage>> Post(string post_type, IEnumerable<IContent> contents)
+        public static async Task<List<HttpResponseMessage>> Post(string post_type, IEnumerable<IContent> contents, string referrer = "", bool reget_settings = false)
         {
-            HttpClient client = new();
+            if (_first || reget_settings)
+            {
+                _first = false;
+                GetSettings();
+            }
 
-            HTTPHelper.CheckExistsINI();
-            string address = INIHelper.ReadINI("Post", "address", "config.ini");
-            string port = INIHelper.ReadINI("Post", "port", "config.ini");
-            bool enable_ssl = Convert.ToBoolean(INIHelper.ReadINI("Post", "ssl", "config.ini").ToLower());
-            string token = INIHelper.ReadINI("Post", "token", "config.ini").ToLower();
-
-            client.BaseAddress = new Uri(enable_ssl ? "https://" : "http://" + address + ":" + port + "/" + post_type);
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+            HttpClient client = new()
+            {
+                BaseAddress = new Uri(Enable_SSL ? "https://" : "http://" + Address + ":" + Port + "/" + post_type)
+            };
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + Token);
+            client.DefaultRequestHeaders.Referrer = new Uri(referrer);
 
             List<Task<HttpResponseMessage>> tasks = [];
             List<HttpResponseMessage> responses = [];
