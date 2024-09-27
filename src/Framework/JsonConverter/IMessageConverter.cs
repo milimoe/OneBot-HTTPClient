@@ -21,6 +21,7 @@ namespace Milimoe.OneBot.Framework.JsonConverter
                         {
                             "at" => JsonSerializer.Deserialize<AtMessage>(root.GetRawText(), options) ?? new("", ""),
                             "image" => JsonSerializer.Deserialize<ImageMessage>(root.GetRawText(), options) ?? new(""),
+                            "markdown" => JsonSerializer.Deserialize<MarkdownMessage>(root.GetRawText(), options) ?? new(""),
                             "record" => JsonSerializer.Deserialize<RecordMessage>(root.GetRawText(), options) ?? new(""),
                             "reply" => JsonSerializer.Deserialize<ReplyMessage>(root.GetRawText(), options) ?? new(""),
                             _ => JsonSerializer.Deserialize<TextMessage>(root.GetRawText(), options) ?? new(""),
@@ -57,6 +58,17 @@ namespace Milimoe.OneBot.Framework.JsonConverter
                 writer.WriteStringValue(image.data.file);
                 writer.WritePropertyName("url");
                 writer.WriteStringValue(image.data.url);
+                writer.WriteEndObject();
+            }
+            else if (value is MarkdownMessage markdown)
+            {
+                writer.WritePropertyName("type");
+                writer.WriteStringValue("markdown");
+
+                writer.WritePropertyName("data");
+                writer.WriteStartObject();
+                writer.WritePropertyName("data");
+                writer.WriteStringValue(markdown.data.data);
                 writer.WriteEndObject();
             }
             else if (value is RecordMessage record)
