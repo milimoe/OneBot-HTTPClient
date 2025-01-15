@@ -26,9 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="FunGame.Core">
-      <HintPath>..\..\FunGame.Core\bin\Debug\net9.0\FunGame.Core.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\FunGame.Core\FunGame.Core.csproj" />
   </ItemGroup>
 
 </Project>
