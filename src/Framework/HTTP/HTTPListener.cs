@@ -57,9 +57,10 @@ namespace Milimoe.OneBot.Framework
             {
                 Task<GroupMsgEventQuickReply?> task_groupmsg = OnGroupMessageHandle(body);
                 Task task_groupban = OnGroupBanNoticeHandle(body);
+                Task task_grouprecall = OnGroupRecallNoticeHandle(body);
                 Task<FriendMsgEventQuickReply?> task_friendmsg = OnFriendMessageHandle(body);
 
-                await Task.WhenAll(task_groupmsg, task_groupban, task_friendmsg);
+                await Task.WhenAll(task_groupmsg, task_groupban, task_grouprecall, task_friendmsg);
 
                 group_quick_reply = await task_groupmsg;
                 friend_quick_reply = await task_friendmsg;
@@ -99,6 +100,14 @@ namespace Milimoe.OneBot.Framework
         {
             IEvent e = HTTPHelper.ParseMsgToEvent<GroupBanEvent>(msg);
             if (e.post_type == "notice" && e.post_sub_type == "group_ban" && GroupBanNoticeListening != null) await GroupBanNoticeListening.Invoke((GroupBanEvent)e);
+        }
+        
+        public delegate Task GroupRecallNoticeListeningTask(GroupRecallEvent event_grouprecall);
+        public event GroupRecallNoticeListeningTask? GroupRecallNoticeListening;
+        public async Task OnGroupRecallNoticeHandle(string msg)
+        {
+            IEvent e = HTTPHelper.ParseMsgToEvent<GroupRecallEvent>(msg);
+            if (e.post_type == "notice" && e.post_sub_type == "group_recall" && GroupRecallNoticeListening != null) await GroupRecallNoticeListening.Invoke((GroupRecallEvent)e);
         }
 
         public delegate Task<FriendMsgEventQuickReply?> FriendMessageListeningTask(FriendMessageEvent event_friend);

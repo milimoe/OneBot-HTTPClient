@@ -14,7 +14,7 @@ namespace Milimoe.OneBot.Framework.Utility
             Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
             ReferenceHandler = ReferenceHandler.IgnoreCycles,
             Converters = { new AnonymousConverter(), new GroupMessageEventConverter(), new SenderConverter(), new IMessageConverter(),
-                new GroupConverter(), new MemberConverter(), new FriendMessageEventConverter(), new GroupBanEventConverter()}
+                new GroupConverter(), new MemberConverter(), new FriendMessageEventConverter(), new GroupBanEventConverter(), new GroupRecallEventConverter() }
         };
 
         public static string GetString<T>(T obj)

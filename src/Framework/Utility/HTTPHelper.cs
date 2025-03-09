@@ -42,6 +42,10 @@ namespace Milimoe.OneBot.Utility
                 {
                     result = JsonTools.GetObject<GroupBanEvent>(response_msg) ?? new GroupBanEvent();
                 }
+                else if (typeof(T) == typeof(GroupRecallEvent))
+                {
+                    result = JsonTools.GetObject<GroupRecallEvent>(response_msg) ?? new GroupRecallEvent();
+                }
                 else if (typeof(T) == typeof(FriendMessageEvent))
                 {
                     result = JsonTools.GetObject<FriendMessageEvent>(response_msg) ?? new FriendMessageEvent();
