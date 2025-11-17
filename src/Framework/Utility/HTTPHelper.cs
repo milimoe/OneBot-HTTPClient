@@ -1,19 +1,17 @@
 ﻿using Milimoe.FunGame.Core.Api.Utility;
 using Milimoe.FunGame.Core.Library.Constant;
-using Milimoe.OneBot.Framework;
 using Milimoe.OneBot.Framework.Interface;
-using Milimoe.OneBot.Framework.Utility;
 using Milimoe.OneBot.Model.Content;
 using Milimoe.OneBot.Model.Event;
 using Milimoe.OneBot.Model.Message;
 
-namespace Milimoe.OneBot.Utility
+namespace Milimoe.OneBot.Framework.Utility
 {
     public class HTTPHelper
     {
         internal static void CheckExistsINI()
         {
-            if (!INIHelper.ExistINIFile("config.ini"))
+            if (!INIHelper.INIFileExists("config.ini"))
             {
                 // 不存在则创建
                 StreamWriter writer = new("config.ini", false, General.DefaultEncoding);

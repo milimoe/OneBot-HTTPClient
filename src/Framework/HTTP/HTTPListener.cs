@@ -5,7 +5,6 @@ using Milimoe.OneBot.Framework.Interface;
 using Milimoe.OneBot.Framework.Utility;
 using Milimoe.OneBot.Model.Event;
 using Milimoe.OneBot.Model.QuickReply;
-using Milimoe.OneBot.Utility;
 
 namespace Milimoe.OneBot.Framework
 {
@@ -101,7 +100,7 @@ namespace Milimoe.OneBot.Framework
             IEvent e = HTTPHelper.ParseMsgToEvent<GroupBanEvent>(msg);
             if (e.post_type == "notice" && e.post_sub_type == "group_ban" && GroupBanNoticeListening != null) await GroupBanNoticeListening.Invoke((GroupBanEvent)e);
         }
-        
+
         public delegate Task GroupRecallNoticeListeningTask(GroupRecallEvent event_grouprecall);
         public event GroupRecallNoticeListeningTask? GroupRecallNoticeListening;
         public async Task OnGroupRecallNoticeHandle(string msg)
